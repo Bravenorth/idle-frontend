@@ -1,62 +1,27 @@
+// src/pages/game/Game.js
 import "./Game.css";
 import { useAtom } from "jotai";
-import { useEffect, useState, useCallback } from "react";
 import {
   arcanesXpAtom,
   alchemyXpAtom,
   shapingXpAtom,
   activeDomainAtom,
 } from "../../atoms/skills";
-import useTickEngine from "../../hooks/useTickEngine"; // ← notre hook
-
-const DOMAIN_LIST = [
-  { key: "arcanes", label: "Arcanes anciennes", delay: 1000 },
-  { key: "alchemy", label: "Alchimie élémentaire", delay: 1000 },
-  { key: "shaping", label: "Arts de la Transmutation", delay: 1000 },
-];
+import { progressAtom } from "../../atoms/game";
+import useGameLoop from "../../hooks/useGameLoop";
+import { DOMAIN_LIST, getLabel } from "../../constants/domains";
 
 export default function Game() {
-  const [arcanesXp, setArcanesXp] = useAtom(arcanesXpAtom);
-  const [alchemyXp, setAlchemyXp] = useAtom(alchemyXpAtom);
-  const [shapingXp, setShapingXp] = useAtom(shapingXpAtom);
+  const [arcanesXp] = useAtom(arcanesXpAtom);
+  const [alchemyXp] = useAtom(alchemyXpAtom);
+  const [shapingXp] = useAtom(shapingXpAtom);
   const [activeDomain, setActiveDomain] = useAtom(activeDomainAtom);
+  const [progress] = useAtom(progressAtom);
 
-  const [delay, setDelay] = useState(null);
-  const [progress, setProgress] = useState(0);
+  useGameLoop();
 
-  useEffect(() => {
-    const current = DOMAIN_LIST.find((d) => d.key === activeDomain);
-    setDelay(current?.delay || null);
-    setProgress(0);
-  }, [activeDomain]);
-
-  const handleTick = useCallback(() => {
-    switch (activeDomain) {
-      case "arcanes":
-        setArcanesXp((xp) => xp + 1);
-        break;
-      case "alchemy":
-        setAlchemyXp((xp) => xp + 1);
-        break;
-      case "shaping":
-        setShapingXp((xp) => xp + 1);
-        break;
-      default:
-        break;
-    }
-  }, [activeDomain, setArcanesXp, setAlchemyXp, setShapingXp]);
-
-  const handleProgress = useCallback((value) => {
-    setProgress(value);
-  }, []);
-
-  // ✅ Utilisation du moteur de tick
-  useTickEngine({
-    delay,
-    enabled: !!activeDomain,
-    onTick: handleTick,
-    onProgress: handleProgress,
-  });
+  const currentDomain = DOMAIN_LIST.find((d) => d.key === activeDomain);
+  const delay = currentDomain?.delay || null;
 
   const handleActivate = (key) => {
     setActiveDomain((prev) => (prev === key ? null : key));
@@ -76,21 +41,24 @@ export default function Game() {
         <p>Délai d’itération : {delay ? delay / 1000 + "s" : "—"}</p>
 
         <div className="game-domains">
-          {DOMAIN_LIST.map(({ key, label }) => (
-            <Domain
-              key={key}
-              name={label}
-              xp={
-                key === "arcanes"
-                  ? arcanesXp
-                  : key === "alchemy"
-                  ? alchemyXp
-                  : shapingXp
-              }
-              isActive={activeDomain === key}
-              onActivate={() => handleActivate(key)}
-            />
-          ))}
+          {DOMAIN_LIST.map(({ key, label }) => {
+            const xp =
+              key === "arcanes"
+                ? arcanesXp
+                : key === "alchemy"
+                ? alchemyXp
+                : shapingXp;
+
+            return (
+              <Domain
+                key={key}
+                name={label}
+                xp={xp}
+                isActive={activeDomain === key}
+                onActivate={() => handleActivate(key)}
+              />
+            );
+          })}
         </div>
       </div>
     </div>
@@ -102,15 +70,11 @@ function StatusBar({ activeDomain, progress }) {
     <div className="game-status">
       <p>
         Activité en cours :{" "}
-        <strong>
-          {activeDomain ? getDomainLabel(activeDomain) : "Repos méditatif"}
-        </strong>
+        <strong>{activeDomain ? getLabel(activeDomain) : "Repos méditatif"}</strong>
       </p>
       <div className="progress-bar">
         <div
-          className={`progress-bar-fill ${
-            progress === 0 ? "no-transition" : ""
-          }`}
+          className={`progress-bar-fill ${progress === 0 ? "no-transition" : ""}`}
           style={{ width: `${activeDomain ? progress : 0}%` }}
         />
       </div>
@@ -128,8 +92,4 @@ function Domain({ name, xp, isActive, onActivate }) {
       </button>
     </div>
   );
-}
-
-function getDomainLabel(key) {
-  return DOMAIN_LIST.find((d) => d.key === key)?.label;
 }
