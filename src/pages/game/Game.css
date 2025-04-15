@@ -1,0 +1,133 @@
+/* Game.css – Thème Heroic Fantasy */
+
+body {
+  background: linear-gradient(to bottom, #1b1a1f, #0d0c11);
+  color: #f0e6d2;
+  font-family: 'Garamond', 'Georgia', serif;
+}
+
+.game-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-blend-mode: overlay;
+}
+
+.game-container {
+  background-color: rgba(30, 20, 40, 0.85);
+  border: 2px solid #af9e7c;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+.game-title {
+  font-size: 2.5rem;
+  color: #ffe8a3;
+  text-shadow: 1px 1px 2px #000;
+  margin-bottom: 1rem;
+}
+
+.game-domains {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 600px) {
+  .game-domains {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.domain-card {
+  background-color: #2b1f36;
+  border: 1px solid #7c5e3b;
+  border-radius: 6px;
+  padding: 1.2rem;
+  flex: 1;
+  color: #f8e9c1;
+  box-shadow: inset 0 0 10px #000;
+}
+
+.domain-card h2 {
+  color: #ffdf91;
+  margin-bottom: 0.5rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+}
+
+.domain-card p {
+  margin: 0.4rem 0 1rem;
+  font-size: 1.1rem;
+}
+
+.domain-card button {
+  background-color: #b7945a;
+  color: #1b1a1f;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: inherit;
+}
+
+.domain-card button:hover {
+  background-color: #d3af6e;
+}
+
+.game-status {
+  margin-bottom: 2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid #665c49;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.progress-bar {
+  background-color: #403530;
+  border: 1px solid #8a765a;
+  height: 18px;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #ffe188, #ffd95e);
+  transition: width 0.05s linear;
+}
+
+.progress-bar-fill.no-transition {
+  transition: none;
+}
+
+.game-header {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.game-header button {
+  background-color: #a48a64;
+  color: #1e1a17;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.game-header button:hover {
+  background-color: #c0a370;
+}
