@@ -1,95 +1,84 @@
-// src/pages/game/Game.js
-import "./Game.css";
-import { useAtom } from "jotai";
+import './Game.css';
+import { useEffect, useRef } from 'react';
+import { useAtom } from 'jotai';
 import {
-  arcanesXpAtom,
-  alchemyXpAtom,
-  shapingXpAtom,
-  activeDomainAtom,
-} from "../../atoms/skills";
-import { progressAtom } from "../../atoms/game";
-import useGameLoop from "../../hooks/useGameLoop";
-import { DOMAIN_LIST, getLabel } from "../../constants/domains";
+  miningXpAtom,
+  activeSkillAtom
+} from '../../atoms/skills';
+import {
+  tickAtom,
+  progressAtom
+} from '../../atoms/game';
+import { getSkillByKey } from '../../constants/skills';
 
 export default function Game() {
-  const [arcanesXp] = useAtom(arcanesXpAtom);
-  const [alchemyXp] = useAtom(alchemyXpAtom);
-  const [shapingXp] = useAtom(shapingXpAtom);
-  const [activeDomain, setActiveDomain] = useAtom(activeDomainAtom);
-  const [progress] = useAtom(progressAtom);
+  const [miningXp, setMiningXp] = useAtom(miningXpAtom);
+  const [activeSkill, setActiveSkill] = useAtom(activeSkillAtom);
+  const [, setTick] = useAtom(tickAtom);
+  const [progress, setProgress] = useAtom(progressAtom);
 
-  useGameLoop();
+  const tickRef = useRef(null);
+  const progressRef = useRef(null);
 
-  const currentDomain = DOMAIN_LIST.find((d) => d.key === activeDomain);
-  const delay = currentDomain?.delay || null;
+  useEffect(() => {
+    clearInterval(tickRef.current);
+    clearInterval(progressRef.current);
+    setProgress(0);
 
-  const handleActivate = (key) => {
-    setActiveDomain((prev) => (prev === key ? null : key));
+    const skill = getSkillByKey(activeSkill);
+    if (!skill) return;
+
+    const { delay } = skill;
+
+    tickRef.current = setInterval(() => {
+      setTick(t => t + 1);
+      setMiningXp(xp => xp + 1);
+      setProgress(0);
+    }, delay);
+
+    const stepMs = 50;
+    let current = 0;
+    const step = (stepMs / delay) * 100;
+
+    progressRef.current = setInterval(() => {
+      current += step;
+      if (current >= 100) current = 0;
+      setProgress(current);
+    }, stepMs);
+
+    return () => {
+      clearInterval(tickRef.current);
+      clearInterval(progressRef.current);
+    };
+  }, [activeSkill, setMiningXp, setTick, setProgress]);
+
+  const handleClick = () => {
+    setActiveSkill(prev => (prev === 'mining' ? null : 'mining'));
   };
 
   return (
     <div className="game-wrapper">
       <header className="game-header">
-        <button onClick={() => (window.location.href = "/")}>
-          Retour à l'accueil
-        </button>
+        <button onClick={() => (window.location.href = '/')}>Retour</button>
       </header>
 
       <div className="game-container">
-        <StatusBar activeDomain={activeDomain} progress={progress} />
-        <h1 className="game-title">Évolution mystique</h1>
-        <p>Délai d’itération : {delay ? delay / 1000 + "s" : "—"}</p>
-
-        <div className="game-domains">
-          {DOMAIN_LIST.map(({ key, label }) => {
-            const xp =
-              key === "arcanes"
-                ? arcanesXp
-                : key === "alchemy"
-                ? alchemyXp
-                : shapingXp;
-
-            return (
-              <Domain
-                key={key}
-                name={label}
-                xp={xp}
-                isActive={activeDomain === key}
-                onActivate={() => handleActivate(key)}
-              />
-            );
-          })}
+        <div className="game-status">
+          <p>Activité en cours : <strong>{activeSkill ? 'Minage' : 'Repos'}</strong></p>
+          <div className="progress-bar">
+            <div
+              className={`progress-bar-fill ${progress === 0 ? 'no-transition' : ''}`}
+              style={{ width: `${activeSkill ? progress : 0}%` }}
+            />
+          </div>
         </div>
-      </div>
-    </div>
-  );
-}
 
-function StatusBar({ activeDomain, progress }) {
-  return (
-    <div className="game-status">
-      <p>
-        Activité en cours :{" "}
-        <strong>{activeDomain ? getLabel(activeDomain) : "Repos méditatif"}</strong>
-      </p>
-      <div className="progress-bar">
-        <div
-          className={`progress-bar-fill ${progress === 0 ? "no-transition" : ""}`}
-          style={{ width: `${activeDomain ? progress : 0}%` }}
-        />
+        <h1 className="game-title">Activité : Minage</h1>
+        <p>XP : {miningXp}</p>
+        <button onClick={handleClick}>
+          {activeSkill === 'mining' ? 'Arrêter' : 'Commencer'}
+        </button>
       </div>
-    </div>
-  );
-}
-
-function Domain({ name, xp, isActive, onActivate }) {
-  return (
-    <div className="domain-card">
-      <h2>{name}</h2>
-      <p>XP : {xp}</p>
-      <button onClick={onActivate}>
-        {isActive ? "Interrompre" : "Pratiquer"}
-      </button>
     </div>
   );
 }
