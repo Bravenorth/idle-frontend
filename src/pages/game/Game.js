@@ -6,72 +6,94 @@ import {
   skillLevelAtoms,
   activeSkillAtom,
 } from "../../atoms/skills";
+import { inventoryAtom } from "../../atoms/inventory";
 import { getSkillByKey } from "../../constants/skills";
-import ProgressTicker from "../../components/ProgressTicker";
+import { ITEMS } from "../../constants/items";
+
 import useLevelSystem from "../../hooks/useLevelSystem";
 import useSkillDelay from "../../hooks/useSkillDelay";
+
+import ProgressTicker from "../../components/ProgressTicker";
+import Inventory from "../../components/Inventory";
 
 export default function Game() {
   const [activeSkill, setActiveSkill] = useAtom(activeSkillAtom);
   const [xp, setXp] = useAtom(skillXpAtoms.mining);
   const [level, setLevel] = useAtom(skillLevelAtoms.mining);
+  const [, setInventory] = useAtom(inventoryAtom);
 
   const skill = getSkillByKey("mining");
-
-  const scaledDelay = useSkillDelay(level, skill.baseDelay, skill.delayFactor, skill.minDelay);
+  const delay = useSkillDelay(level, skill.baseDelay, skill.delayFactor, skill.minDelay);
   const xpNeeded = useLevelSystem(xp, level, setXp, setLevel, skill.baseXp, skill.xpGrowthFactor);
 
   const handleTickComplete = () => {
-    setXp((xp) => xp + 1);
+    setXp((prevXp) => prevXp + 1);
+
+    ITEMS.forEach((item) => {
+      if (Math.random() < item.chance) {
+        setInventory((prev) => [...prev, { id: item.id }]);
+      }
+    });
+  };
+
+  const toggleSkill = () => {
+    setActiveSkill((prev) => (prev === "mining" ? null : "mining"));
   };
 
   return (
     <div className="game-wrapper">
+      {/* Bouton retour */}
       <header className="game-header">
         <button onClick={() => (window.location.href = "/")}>
           Retour à l'accueil
         </button>
       </header>
 
+      {/* Contenu principal */}
       <div className="game-container">
-        <div className="game-status">
+        {/* Section - activité */}
+        <section className="section-box">
+          <h2>Activité en cours</h2>
           <p>
-            Activité en cours :{" "}
             <strong>{activeSkill ? skill.label : "Repos méditatif"}</strong>
           </p>
           <ProgressTicker
-            delay={scaledDelay}
+            delay={delay}
             enabled={activeSkill === "mining"}
             onComplete={handleTickComplete}
           />
-        </div>
+        </section>
 
-        <h1 className="game-title">Évolution mystique</h1>
-        <p>
-          XP : {xp} / {xpNeeded} | Niveau : {level}
-        </p>
-        <p>Délai actuel : {scaledDelay.toFixed(0)} ms</p>
-        <p>Délai minimum possible : {skill.minDelay} ms</p>
+        {/* Section - progression */}
+        <section className="section-box">
+          <h2>Évolution mystique</h2>
+          <p><strong>Niveau :</strong> {level}</p>
+          <p><strong>XP :</strong> {xp} / {xpNeeded}</p>
+          <p><strong>Délai actuel :</strong> {delay.toFixed(0)} ms</p>
+          <p><strong>Délai minimum :</strong> {skill.minDelay} ms</p>
+        </section>
 
-        <div className="game-domains">
+        {/* Section - skills */}
+        <section className="section-box">
+          <h2>Compétences disponibles</h2>
           <SkillCard
-            skillKey="mining"
-            label="Minage"
+            label={skill.label}
             isActive={activeSkill === "mining"}
-            onToggle={() =>
-              setActiveSkill((prev) => (prev === "mining" ? null : "mining"))
-            }
+            onToggle={toggleSkill}
           />
-        </div>
+        </section>
       </div>
+
+      {/* Inventaire (positionné à droite) */}
+      <Inventory />
     </div>
   );
 }
 
-function SkillCard({ skillKey, label, isActive, onToggle }) {
+function SkillCard({ label, isActive, onToggle }) {
   return (
     <div className="domain-card">
-      <h2>{label}</h2>
+      <h3>{label}</h3>
       <button onClick={onToggle}>
         {isActive ? "Interrompre" : "Pratiquer"}
       </button>
