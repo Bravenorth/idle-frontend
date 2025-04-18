@@ -1,0 +1,22 @@
+/* style.css – pour ProgressTicker uniquement */
+
+.progress-bar {
+    background-color: #403530;               /* fond brut, terreux */
+    border: 1px solid #8a765a;               /* bord plus clair */
+    height: 18px;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+  
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, #ffe188, #ffd95e); /* doré progressif */
+    transition: width 0.05s linear;
+  }
+  
+  .progress-bar-fill.no-transition {
+    transition: none;
+  }
+  

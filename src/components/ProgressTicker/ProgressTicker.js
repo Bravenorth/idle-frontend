@@ -1,14 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import "./ProgressTicker.css"
 
-/**
- * Composant entièrement indépendant pour gérer une itération avec progression.
- *
- * Props :
- * - delay : durée en ms d’une itération complète
- * - enabled : booléen pour activer/désactiver l’itération
- * - onComplete : callback appelé à chaque fin d’itération
- * - render : fonction facultative pour rendre une UI personnalisée avec `progress`
- */
 export default function ProgressTicker({ delay = 1000, enabled = false, onComplete, render }) {
   const [progress, setProgress] = useState(0);
   const intervalRef = useRef(null);
@@ -39,11 +31,10 @@ export default function ProgressTicker({ delay = 1000, enabled = false, onComple
     return render(progress);
   }
 
-  // Rendu par défaut (UI simple)
   return (
     <div className="progress-bar">
       <div
-        className="progress-bar-fill"
+        className={`progress-bar-fill ${progress === 0 ? "no-transition" : ""}`}
         style={{ width: `${enabled ? progress : 0}%` }}
       />
     </div>

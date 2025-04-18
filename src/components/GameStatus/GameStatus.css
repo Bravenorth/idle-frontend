@@ -1,0 +1,27 @@
+/* style.css – GameStatus */
+
+.game-status {
+    background-color: #2a1d32;
+    border: 1px solid #7e6851;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4), inset 0 0 4px rgba(255, 255, 255, 0.05);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .game-status h2 {
+    font-size: 1.6rem;
+    color: #ffd37b;
+    font-family: 'Cinzel', serif;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.5rem;
+  }
+  
+  .game-status p {
+    margin-top: 0.8rem;
+    font-size: 1.1rem;
+    color: #f0e6d2;
+  }
+  

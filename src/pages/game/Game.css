@@ -1,116 +1,9 @@
-/* Game.css – Thème Heroic Fantasy */
+/* === LAYOUT GLOBAL === */
 
 body {
-  background: linear-gradient(to bottom, #1b1a1f, #0d0c11);
-  color: #f0e6d2;
-  font-family: 'Garamond', 'Georgia', serif;
   margin: 0;
   padding: 0;
-}
-
-.game-wrapper {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  padding: 2rem;
-  min-height: 100vh;
   box-sizing: border-box;
-}
-
-@media (min-width: 960px) {
-  .game-wrapper {
-    grid-template-columns: 1fr 240px;
-    align-items: start;
-    justify-content: center;
-  }
-}
-
-.game-container {
-  background-color: rgba(30, 20, 40, 0.85);
-  border: 2px solid #af9e7c;
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 800px;
-  width: 100%;
-  text-align: center;
-  box-sizing: border-box;
-}
-
-.section-box {
-  background-color: rgba(40, 30, 50, 0.8);
-  border: 1px solid #af9e7c;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: inset 0 0 8px #000;
-}
-
-.section-box h2 {
-  margin-bottom: 1rem;
-  font-size: 1.4rem;
-  color: #ffeabf;
-  text-align: left;
-  border-bottom: 1px solid #665c49;
-  padding-bottom: 0.5rem;
-}
-
-.game-title {
-  font-size: 2.5rem;
-  color: #ffe8a3;
-  text-shadow: 1px 1px 2px #000;
-  margin-bottom: 1rem;
-}
-
-.domain-card {
-  background-color: #2b1f36;
-  border: 1px solid #7c5e3b;
-  border-radius: 6px;
-  padding: 1.2rem;
-  color: #f8e9c1;
-  box-shadow: inset 0 0 10px #000;
-}
-
-.domain-card h3 {
-  color: #ffdf91;
-  margin-bottom: 0.5rem;
-  font-family: 'Cinzel', serif;
-  font-size: 1.3rem;
-}
-
-.domain-card button {
-  background-color: #b7945a;
-  color: #1b1a1f;
-  border: none;
-  padding: 0.6rem 1rem;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  font-family: inherit;
-}
-
-.domain-card button:hover {
-  background-color: #d3af6e;
-}
-
-.progress-bar {
-  background-color: #403530;
-  border: 1px solid #8a765a;
-  height: 18px;
-  width: 100%;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 0.5rem;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background: linear-gradient(to right, #ffe188, #ffd95e);
-  transition: width 0.05s linear;
-}
-
-.progress-bar-fill.no-transition {
-  transition: none;
 }
 
 .game-header {
@@ -120,57 +13,42 @@ body {
   z-index: 10;
 }
 
-.game-header button {
-  background-color: #a48a64;
-  color: #1e1a17;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.game-header button:hover {
-  background-color: #c0a370;
-}
-
-/* Inventory styling fusionné */
-.inventory-wrapper {
-  background-color: rgba(20, 15, 25, 0.9);
-  border: 1px solid #7f6a4a;
-  border-radius: 6px;
-  padding: 1rem;
-  max-height: 500px;
-  overflow-y: auto;
-  box-shadow: inset 0 0 6px #000;
+.game-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  min-height: 100vh;
 }
 
 @media (min-width: 960px) {
-  .inventory-wrapper {
-    width: 100%;
-    max-width: 240px;
-    position: sticky;
-    top: 2rem;
+  .game-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
   }
 }
 
-.inventory-slot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #31282b;
-  border: 1px solid #5d4b3c;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-  border-radius: 4px;
-  font-size: 1rem;
+.game-main {
+  flex: 1;
+  max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.inventory-icon {
-  font-size: 1.3rem;
+.game-inventory {
+  max-width: 220px;
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 2rem;
 }
 
-.inventory-count {
-  font-weight: bold;
-  color: #ffdb8a;
+/* === SECTIONS === */
+
+.section-box {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-sizing: border-box;
 }

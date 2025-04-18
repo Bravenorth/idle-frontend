@@ -1,6 +1,7 @@
 import { useAtomValue } from "jotai";
-import { inventoryAtom } from "../atoms/inventory";
-import { getItemById } from "../constants/items";
+import { inventoryAtom } from "../../atoms/inventory";
+import { getItemById } from "../../constants/items";
+
 import "./Inventory.css";
 
 export default function Inventory() {
